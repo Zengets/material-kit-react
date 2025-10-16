@@ -18,7 +18,9 @@ const router = createBrowserRouter([
     errorElement: <ErrorBoundary />,
     children: routesSection,
   },
-]);
+], {
+  basename: import.meta.env.MODE === 'production' ? '/teach' : '/',
+});
 
 const root = createRoot(document.getElementById('root')!);
 

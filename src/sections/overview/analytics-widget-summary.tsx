@@ -13,6 +13,7 @@ import { fNumber, fPercent, fShortenNumber } from 'src/utils/format-number';
 import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
 import { Chart, useChart } from 'src/components/chart';
+import { getAssetUrl } from 'src/utils/get-asset-url';
 
 // ----------------------------------------------------------------------
 
@@ -125,7 +126,7 @@ export function AnalyticsWidgetSummary({
       </Box>
 
       <SvgColor
-        src="/assets/background/shape-square.svg"
+        src={getAssetUrl('assets/background/shape-square.svg')}
         sx={{
           top: 0,
           left: -20,

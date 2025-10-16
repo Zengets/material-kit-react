@@ -65,7 +65,7 @@ export function AnalyticsCurrentVisits({ title, subheader, chart, sx, ...other }
           my: 6,
           mx: 'auto',
           width: { xs: 240, xl: 260 },
-          height: { xs: 240, xl: 260 },
+          height: { xs: 200, xl: 215 },
         }}
       />
 

@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
+import { getAssetUrl } from 'src/utils/get-asset-url';
+
 // ----------------------------------------------------------------------
 
 export function NavUpgrade({ sx, ...other }: StackProps) {
@@ -47,7 +49,7 @@ export function NavUpgrade({ sx, ...other }: StackProps) {
       <Box
         component="img"
         alt="Minimal dashboard"
-        src="/assets/illustrations/illustration-dashboard.webp"
+        src={getAssetUrl('assets/illustrations/illustration-dashboard.webp')}
         sx={{ width: 200, my: 2 }}
       />
 

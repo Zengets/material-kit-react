@@ -40,7 +40,7 @@ export function UserView() {
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
-    <DashboardContent>
+    <DashboardContent maxWidth="xl">
       <Box
         sx={{
           mb: 5,

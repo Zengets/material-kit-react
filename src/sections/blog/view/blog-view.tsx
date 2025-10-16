@@ -30,7 +30,7 @@ export function BlogView({ posts }: Props) {
   }, []);
 
   return (
-    <DashboardContent>
+    <DashboardContent maxWidth="xl">
       <Box
         sx={{
           mb: 5,

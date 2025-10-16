@@ -14,6 +14,7 @@ import { fShortenNumber } from 'src/utils/format-number';
 
 import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
+import { getAssetUrl } from 'src/utils/get-asset-url';
 
 // ----------------------------------------------------------------------
 
@@ -148,7 +149,7 @@ export function PostItem({
 
   const renderShape = (
     <SvgColor
-      src="/assets/icons/shape-avatar.svg"
+      src={getAssetUrl('assets/icons/shape-avatar.svg')}
       sx={{
         left: 0,
         width: 88,

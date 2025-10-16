@@ -1,12 +1,12 @@
+ 
 import type { CSSObject, Breakpoint } from '@mui/material/styles';
 
 import { merge } from 'es-toolkit';
 
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
+import { Stack } from '@mui/material';
+
 import Alert from '@mui/material/Alert';
 
-import { RouterLink } from 'src/routes/components';
 
 import { Logo } from 'src/components/logo';
 
@@ -50,19 +50,13 @@ export function AuthLayout({
         </Alert>
       ),
       leftArea: (
-        <>
+        <Stack direction="row" alignItems="center" gap={1}>
           {/** @slot Logo */}
           <Logo />
-        </>
+          <h3>产教融合平台</h3>
+        </Stack>
       ),
-      rightArea: (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
-          {/** @slot Help link */}
-          <Link href="#" component={RouterLink} color="inherit" sx={{ typography: 'subtitle2' }}>
-            Need help?
-          </Link>
-        </Box>
-      ),
+      rightArea: null,
     };
 
     return (
@@ -118,7 +112,7 @@ export function AuthLayout({
       /** **************************************
        * @Styles
        *************************************** */
-      cssVars={{ '--layout-auth-content-width': '420px', ...cssVars }}
+      cssVars={cssVars}
       sx={[
         (theme) => ({
           position: 'relative',
@@ -144,5 +138,5 @@ const backgroundStyles = (): CSSObject => ({
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center center',
-  backgroundImage: 'url(/assets/background/overlay.jpg)',
+  backgroundImage: 'url(/teach/assets/background/overlay.jpg)',
 });

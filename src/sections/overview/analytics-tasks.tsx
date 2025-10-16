@@ -1,19 +1,17 @@
 import type { BoxProps } from '@mui/material/Box';
 import type { CardProps } from '@mui/material/Card';
 
-import { useState } from 'react';
 import { usePopover } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Popover from '@mui/material/Popover';
-import Divider from '@mui/material/Divider';
 import MenuList from '@mui/material/MenuList';
-import Checkbox from '@mui/material/Checkbox';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { Iconify } from 'src/components/iconify';
@@ -27,32 +25,32 @@ type Props = CardProps & {
   list: {
     id: string;
     name: string;
+    tag?: string;
   }[];
 };
 
 export function AnalyticsTasks({ title, subheader, list, sx, ...other }: Props) {
-  const [selected, setSelected] = useState(['2']);
-
-  const handleClickComplete = (taskId: string) => {
-    const tasksCompleted = selected.includes(taskId)
-      ? selected.filter((value) => value !== taskId)
-      : [...selected, taskId];
-
-    setSelected(tasksCompleted);
-  };
-
   return (
     <Card sx={sx} {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
+      <CardHeader 
+        title={title} 
+        subheader={subheader} 
+        sx={{ 
+          mb: 0,
+          pb: 2,
+          '& .MuiCardHeader-title': {
+            fontSize: '1.1rem',
+            fontWeight: 600,
+          }
+        }} 
+      />
 
-      <Scrollbar sx={{ minHeight: 304 }}>
-        <Stack divider={<Divider sx={{ borderStyle: 'dashed' }} />} sx={{ minWidth: 560 }}>
+      <Scrollbar sx={{ maxHeight: 405 }}>
+        <Stack>
           {list.map((item) => (
             <TaskItem
               key={item.id}
               item={item}
-              selected={selected.includes(item.id)}
-              onChange={() => handleClickComplete(item.id)}
             />
           ))}
         </Stack>
@@ -64,66 +62,89 @@ export function AnalyticsTasks({ title, subheader, list, sx, ...other }: Props) 
 // ----------------------------------------------------------------------
 
 type TaskItemProps = BoxProps & {
-  selected: boolean;
   item: Props['list'][number];
-  onChange: (id: string) => void;
 };
 
-function TaskItem({ item, selected, onChange, sx, ...other }: TaskItemProps) {
+function TaskItem({ item, sx, ...other }: TaskItemProps) {
   const menuActions = usePopover();
-
-  const handleMarkComplete = () => {
-    menuActions.onClose();
-    console.info('MARK COMPLETE', item.id);
-  };
 
   const handleShare = () => {
     menuActions.onClose();
     console.info('SHARE', item.id);
   };
 
-  const handleEdit = () => {
-    menuActions.onClose();
-    console.info('EDIT', item.id);
+  // 解析名称和标签
+  const parseNameAndTag = (name: string) => {
+    const match = name.match(/^(.+?)（(.+?)）$/);
+    if (match) {
+      return { name: match[1], tag: match[2] };
+    }
+    return { name, tag: item.tag };
   };
 
-  const handleDelete = () => {
-    menuActions.onClose();
-    console.info('DELETE', item.id);
+  const { name, tag } = parseNameAndTag(item.name);
+
+  // 根据标签内容设置颜色
+  const getTagColor = (tagText?: string) => {
+    if (!tagText) return 'default';
+    if (tagText.includes('正在招募')) return 'success';
+    if (tagText.includes('热门')) return 'error';
+    if (tagText.includes('新增')) return 'info';
+    if (tagText.includes('合作中')) return 'warning';
+    return 'default';
   };
 
   return (
     <>
       <Box
         sx={[
-          () => ({
+          {
             pl: 2,
             pr: 1,
-            py: 1.5,
+            py: 2,
             display: 'flex',
-            ...(selected && {
-              color: 'text.disabled',
-              textDecoration: 'line-through',
-            }),
-          }),
+            alignItems: 'center',
+            gap: 1.5,
+            transition: 'all 0.2s',
+            '&:hover': {
+              bgcolor: 'action.hover',
+            },
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+          },
           ...(Array.isArray(sx) ? sx : [sx]),
         ]}
         {...other}
       >
-        <FormControlLabel
-          label={item.name}
-          control={
-            <Checkbox
-              disableRipple
-              checked={selected}
-              onChange={onChange}
-              slotProps={{ input: { id: `${item.name}-checkbox` } }}
-            />
-          }
-          sx={{ flexGrow: 1, m: 0 }}
-        />
+        <Typography
+          variant="body2"
+          sx={{ 
+            flexGrow: 1,
+            fontSize: '0.95rem',
+            fontWeight: 500,
+          }}
+        >
+          {name}
+        </Typography>
 
-        <IconButton color={menuActions.open ? 'inherit' : 'default'} onClick={menuActions.onOpen}>
+        {tag && (
+          <Chip
+            label={tag}
+            size="small"
+            color={getTagColor(tag)}
+            sx={{
+              height: 24,
+              fontSize: '0.75rem',
+              fontWeight: 500,
+            }}
+          />
+        )}
+
+        <IconButton 
+          color={menuActions.open ? 'primary' : 'default'} 
+          onClick={menuActions.onOpen}
+          size="small"
+        >
           <Iconify icon="eva:more-vertical-fill" />
         </IconButton>
       </Box>
@@ -151,26 +172,9 @@ function TaskItem({ item, selected, onChange, sx, ...other }: TaskItemProps) {
             },
           }}
         >
-          <MenuItem onClick={handleMarkComplete}>
-            <Iconify icon="solar:check-circle-bold" />
-            Mark complete
-          </MenuItem>
-
-          <MenuItem onClick={handleEdit}>
-            <Iconify icon="solar:pen-bold" />
-            Edit
-          </MenuItem>
-
           <MenuItem onClick={handleShare}>
             <Iconify icon="solar:share-bold" />
-            Share
-          </MenuItem>
-
-          <Divider sx={{ borderStyle: 'dashed' }} />
-
-          <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
-            <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
+            分享
           </MenuItem>
         </MenuList>
       </Popover>

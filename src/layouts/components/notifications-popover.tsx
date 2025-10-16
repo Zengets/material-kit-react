@@ -21,6 +21,7 @@ import { fToNow } from 'src/utils/format-time';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import { getAssetUrl } from 'src/utils/get-asset-url';
 
 // ----------------------------------------------------------------------
 
@@ -102,14 +103,14 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
           }}
         >
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="subtitle1">Notifications</Typography>
+            <Typography variant="subtitle1">通知</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              You have {totalUnRead} unread messages
+              您有 {totalUnRead} 条未读消息
             </Typography>
           </Box>
 
           {totalUnRead > 0 && (
-            <Tooltip title=" Mark all as read">
+            <Tooltip title="全部标记为已读">
               <IconButton color="primary" onClick={handleMarkAllAsRead}>
                 <Iconify icon="eva:done-all-fill" />
               </IconButton>
@@ -124,7 +125,7 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                New
+                最新
               </ListSubheader>
             }
           >
@@ -137,7 +138,7 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
             disablePadding
             subheader={
               <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                Before that
+                早些时候
               </ListSubheader>
             }
           >
@@ -151,7 +152,7 @@ export function NotificationsPopover({ data = [], sx, ...other }: NotificationsP
 
         <Box sx={{ p: 1 }}>
           <Button fullWidth disableRipple color="inherit">
-            View all
+            查看全部
           </Button>
         </Box>
       </Popover>
@@ -217,7 +218,7 @@ function renderContent(notification: NotificationItemProps) {
       avatarUrl: (
         <img
           alt={notification.title}
-          src="/assets/icons/notification/ic-notification-package.svg"
+          src={getAssetUrl('assets/icons/notification/ic-notification-package.svg')}
         />
       ),
       title,
@@ -228,7 +229,7 @@ function renderContent(notification: NotificationItemProps) {
       avatarUrl: (
         <img
           alt={notification.title}
-          src="/assets/icons/notification/ic-notification-shipping.svg"
+          src={getAssetUrl('assets/icons/notification/ic-notification-shipping.svg')}
         />
       ),
       title,
@@ -237,7 +238,7 @@ function renderContent(notification: NotificationItemProps) {
   if (notification.type === 'mail') {
     return {
       avatarUrl: (
-        <img alt={notification.title} src="/assets/icons/notification/ic-notification-mail.svg" />
+        <img alt={notification.title} src={getAssetUrl('assets/icons/notification/ic-notification-mail.svg')} />
       ),
       title,
     };
@@ -245,7 +246,7 @@ function renderContent(notification: NotificationItemProps) {
   if (notification.type === 'chat-message') {
     return {
       avatarUrl: (
-        <img alt={notification.title} src="/assets/icons/notification/ic-notification-chat.svg" />
+        <img alt={notification.title} src={getAssetUrl('assets/icons/notification/ic-notification-chat.svg')} />
       ),
       title,
     };

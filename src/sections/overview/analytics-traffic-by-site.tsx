@@ -1,64 +1,106 @@
-import type { CardProps } from '@mui/material/Card';
+import type { BoxProps } from '@mui/material/Box';
 
 import { varAlpha } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
-
-import { fShortenNumber } from 'src/utils/format-number';
 
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-type Props = CardProps & {
+type Props = BoxProps & {
   title?: string;
   subheader?: string;
   list: { value: string; label: string; total: number }[];
 };
 
+// 企业图标和颜色配置
+const companyConfig: Record<string, { icon: string; color: string }> = {
+  huawei: { icon: 'solar:global-bold-duotone', color: '255 0 0' },
+  tencent: { icon: 'solar:chat-round-like-bold-duotone', color: '0 164 255' },
+  alibaba: { icon: 'solar:bag-smile-bold-duotone', color: '255 106 0' },
+  baidu: { icon: 'solar:magnifer-bold-duotone', color: '41 50 225' },
+  jd: { icon: 'solar:cart-large-3-bold-duotone', color: '227 0 11' },
+  bytedance: { icon: 'solar:graph-new-up-bold-duotone', color: '0 0 0' },
+};
+
 export function AnalyticsTrafficBySite({ title, subheader, list, sx, ...other }: Props) {
   return (
-    <Card sx={sx} {...other}>
-      <CardHeader title={title} subheader={subheader} />
+    <Box sx={sx} {...other}>
+      {/* 标题部分 */}
+      {title && (
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mb: 3,
+            fontSize: '1.1rem',
+            fontWeight: 600,
+          }}
+        >
+          {title}
+        </Typography>
+      )}
+      
+      {/* 企业图标列表 */}
       <Box
         sx={{
-          p: 3,
-          gap: 2,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 4,
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        {list.map((site) => (
-          <Box
-            key={site.label}
-            sx={(theme) => ({
-              py: 2.5,
-              display: 'flex',
-              borderRadius: 1.5,
-              textAlign: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-              border: `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
-            })}
-          >
-            {site.value === 'twitter' && <Iconify width={32} icon="socials:twitter" />}
-            {site.value === 'facebook' && <Iconify width={32} icon="socials:facebook" />}
-            {site.value === 'google' && <Iconify width={32} icon="socials:google" />}
-            {site.value === 'linkedin' && <Iconify width={32} icon="socials:linkedin" />}
+        {list.map((site) => {
+          const config = companyConfig[site.value] || { icon: 'solar:buildings-2-bold-duotone', color: '99 115 129' };
+          
+          return (
+            <Box
+              key={site.label}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 1.5,
+                transition: 'all 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: varAlpha(config.color, 0.16),
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    bgcolor: varAlpha(config.color, 0.24),
+                  },
+                }}
+              >
+                <Iconify width={32} icon={config.icon as any} sx={{ color: `rgb(${config.color})` }} />
+              </Box>
 
-            <Typography variant="h6" sx={{ mt: 1 }}>
-              {fShortenNumber(site.total)}
-            </Typography>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {site.label}
-            </Typography>
-          </Box>
-        ))}
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: 'text.secondary',
+                  fontWeight: 500,
+                  textAlign: 'center',
+                }}
+              >
+                {site.label}
+              </Typography>
+            </Box>
+          );
+        })}
       </Box>
-    </Card>
+    </Box>
   );
 }

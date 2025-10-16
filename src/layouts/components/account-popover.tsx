@@ -50,6 +50,10 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     [handleClosePopover, router]
   );
 
+  const handleLogout = useCallback(() => {
+    router.push('/sign-in');
+  }, [router]);
+
   return (
     <>
       <IconButton
@@ -129,8 +133,8 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
-            Logout
+          <Button onClick={handleLogout} fullWidth color="error" size="medium" variant="text">
+            退出登录
           </Button>
         </Box>
       </Popover>

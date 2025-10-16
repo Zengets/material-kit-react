@@ -7,7 +7,6 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
-import ListItemText from '@mui/material/ListItemText';
 
 import { fToNow } from 'src/utils/format-time';
 
@@ -31,23 +30,35 @@ type Props = CardProps & {
 export function AnalyticsNews({ title, subheader, list, sx, ...other }: Props) {
   return (
     <Card sx={sx} {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
+      <CardHeader 
+        title={title} 
+        subheader={subheader} 
+        sx={{ 
+          mb: 0,
+          pb: 2,
+          '& .MuiCardHeader-title': {
+            fontSize: '1.1rem',
+            fontWeight: 600,
+          }
+        }} 
+      />
 
-      <Scrollbar sx={{ minHeight: 405 }}>
-        <Box sx={{ minWidth: 640 }}>
-          {list.map((item) => (
-            <Item key={item.id} item={item} />
+      <Scrollbar sx={{ maxHeight: 405 }}>
+        <Box>
+          {list.map((item, index) => (
+            <Item key={item.id} item={item} isLast={index === list.length - 1} />
           ))}
         </Box>
       </Scrollbar>
 
-      <Box sx={{ p: 2, textAlign: 'right' }}>
+      <Box sx={{ p: 2, textAlign: 'right', borderTop: '1px solid', borderColor: 'divider' }}>
         <Button
           size="small"
-          color="inherit"
+          color="primary"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
+          sx={{ fontWeight: 500 }}
         >
-          View all
+          查看全部
         </Button>
       </Box>
     </Card>
@@ -58,9 +69,10 @@ export function AnalyticsNews({ title, subheader, list, sx, ...other }: Props) {
 
 type ItemProps = BoxProps & {
   item: Props['list'][number];
+  isLast?: boolean;
 };
 
-function Item({ item, sx, ...other }: ItemProps) {
+function Item({ item, isLast, sx, ...other }: ItemProps) {
   return (
     <Box
       sx={[
@@ -69,8 +81,16 @@ function Item({ item, sx, ...other }: ItemProps) {
           px: 3,
           gap: 2,
           display: 'flex',
-          alignItems: 'center',
-          borderBottom: `dashed 1px ${theme.vars.palette.divider}`,
+          alignItems: 'flex-start',
+          borderBottom: isLast ? 'none' : `solid 1px ${theme.vars.palette.divider}`,
+          transition: 'all 0.2s',
+          cursor: 'pointer',
+          '&:hover': {
+            bgcolor: 'action.hover',
+            '& .news-title': {
+              color: 'primary.main',
+            },
+          },
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
@@ -80,23 +100,52 @@ function Item({ item, sx, ...other }: ItemProps) {
         variant="rounded"
         alt={item.title}
         src={item.coverUrl}
-        sx={{ width: 48, height: 48, flexShrink: 0 }}
-      />
-
-      <ListItemText
-        primary={<Link color="inherit">{item.title}</Link>}
-        secondary={item.description}
-        slotProps={{
-          primary: { noWrap: true },
-          secondary: {
-            noWrap: true,
-            sx: { mt: 0.5 },
-          },
+        sx={{ 
+          width: 56, 
+          height: 56, 
+          flexShrink: 0,
+          bgcolor: 'primary.lighter',
+          color: 'primary.main',
+          fontSize: '1.5rem',
+          fontWeight: 600,
         }}
-      />
+      >
+        {item.title.substring(0, 1)}
+      </Avatar>
 
-      <Box sx={{ flexShrink: 0, typography: 'caption', color: 'text.disabled' }}>
-        {fToNow(item.postedAt)}
+      <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <Link 
+          className="news-title"
+          color="inherit" 
+          underline="none"
+          sx={{ 
+            fontWeight: 600,
+            display: 'block',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            mb: 0.5,
+            transition: 'color 0.2s',
+          }}
+        >
+          {item.title}
+        </Link>
+        <Box 
+          component="p"
+          sx={{ 
+            typography: 'body2',
+            color: 'text.secondary',
+            m: 0,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {item.description}
+        </Box>
+        <Box sx={{ mt: 1, typography: 'caption', color: 'text.disabled' }}>
+          {fToNow(item.postedAt)}
+        </Box>
       </Box>
     </Box>
   );
